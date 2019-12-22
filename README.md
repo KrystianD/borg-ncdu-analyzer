@@ -1,17 +1,17 @@
 Borg Backup Ncdu Analyzer
 =====
 
-#### Goal
+### Goal
 
 Get an overview on archive space usage. It doesn't take deduplication and compression into account. Its main goal was to help to identify large files put to the backup archive accidentally.
 
-#### Usage
+### Usage
 
 ```bash
 python borg_ncdu_analyzer.py BORG_ARCHIVE_OR_DUMP [--full-path]
 ```
 
-##### Parameters
+### Parameters
 
 `--full-path` - If passed, all datasets are merged into one FS tree.
 
@@ -42,7 +42,7 @@ Without `--full-path` - three datasets `code`, `backups` and `documents` will be
 /documents
 ```
 
-#### Examples
+### Examples
 
 ```bash
 # Directly from Borg archive
