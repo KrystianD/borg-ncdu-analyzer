@@ -9,9 +9,9 @@ from typing import List, Dict, Iterator, Tuple, Iterable, Callable
 
 class FSEntry:
     def __init__(self, name: str, size: int, sub: List['FSEntry']):
-        self.name = name  # type: str
-        self.size = size  # type: int
-        self.sub = sub  # type: List['FSEntry']
+        self.name = name
+        self.size = size
+        self.sub = sub
 
     def add_entry(self, entry: 'FSEntry'):
         self.sub.append(entry)
