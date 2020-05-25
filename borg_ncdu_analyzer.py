@@ -45,7 +45,7 @@ def open_ncdu_with_tree(tree: List[any]):
 
 class BorgAnalyzer:
     def __init__(self, full_path: bool):
-        self._trees: List[FSEntry] = []
+        self._root_objects: List[FSEntry] = []
         self._fs_cache: Dict[str, FSEntry] = {}
 
         self._process_new_dir = self._process_new_dir_full_path if full_path else self._process_new_dir_dataset
@@ -60,7 +60,7 @@ class BorgAnalyzer:
             self._fs_cache[part_path] = entry
 
             if parent_path == "":
-                self._trees.append(entry)
+                self._root_objects.append(entry)
             else:
                 self._fs_cache[parent_path].add_entry(entry)
 
@@ -68,13 +68,16 @@ class BorgAnalyzer:
     def _process_new_dir_dataset(self, path: str):
         entry = FSEntry.from_filename(path)
         self._fs_cache[path] = entry
-        self._trees.append(entry)
+        self._root_objects.append(entry)
 
     def process_lines(self, lines: Iterable[str]):
         for line in lines:
             record = json.loads(line)
             path = record['path']
             is_dir = record['type'] == 'd'
+
+            if path == ".":
+                continue
 
             entry = FSEntry.from_filename(path, record['size'])
             parent_dir = os.path.dirname(path)
@@ -86,7 +89,11 @@ class BorgAnalyzer:
                 else:
                     self._process_new_dir(path)
             else:
-                self._fs_cache[parent_dir].add_entry(entry)
+                if parent_dir == "":
+                    self._fs_cache[path] = entry
+                    self._root_objects.append(entry)
+                else:
+                    self._fs_cache[parent_dir].add_entry(entry)
 
     def generate_ncdu_tree(self):
 
@@ -103,7 +110,7 @@ class BorgAnalyzer:
             1, 1, {},
             [
                 {'name': '/'},
-                *[entry_to_ncdu(x) for x in self._trees],
+                *[entry_to_ncdu(x) for x in self._root_objects],
             ],
         ]
         return new_tree
