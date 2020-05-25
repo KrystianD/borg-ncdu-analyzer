@@ -3,18 +3,14 @@ import signal
 import subprocess
 import json
 import tempfile
-from typing import List, Dict, Iterator, Tuple, Iterable
+from typing import List, Dict, Iterator, Tuple, Iterable, Callable
 
 
 class FSEntry:
-    name: str
-    size: int
-    sub: List['FSEntry']
-
     def __init__(self, name: str, size: int, sub: List['FSEntry']):
-        self.name = name
-        self.size = size
-        self.sub = sub
+        self.name = name  # type: str
+        self.size = size  # type: int
+        self.sub = sub  # type: List['FSEntry']
 
     def add_entry(self, entry: 'FSEntry'):
         self.sub.append(entry)
@@ -48,10 +44,10 @@ def open_ncdu_with_tree(tree: List[any]):
 
 class BorgAnalyzer:
     def __init__(self, full_path: bool):
-        self._root_objects: List[FSEntry] = []
-        self._fs_cache: Dict[str, FSEntry] = {}
+        self._root_objects = []  # type: List[FSEntry]
+        self._fs_cache = {}  # type: Dict[str, FSEntry]
 
-        self._process_new_dir = self._process_new_dir_full_path if full_path else self._process_new_dir_dataset
+        self._process_new_dir = self._process_new_dir_full_path if full_path else self._process_new_dir_dataset  # type: Callable[[str],None]
 
     # all datasets put under one filesystem
     def _process_new_dir_full_path(self, path: str):
@@ -166,7 +162,7 @@ def main():
                 nonlocal lines_processed
                 lines_processed += 1
                 if lines_processed % 10000 == 0:
-                    print(f"\r[{lines_processed / lines_cnt * 100:2.0f}%]", end='', flush=True)
+                    print("\r[{0:2.0f}%]".format(lines_processed / lines_cnt * 100), end='', flush=True)
                 return x
 
             analyzer = BorgAnalyzer(full_path=args.full_path)
