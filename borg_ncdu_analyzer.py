@@ -3,15 +3,18 @@ import signal
 import subprocess
 import json
 import tempfile
-from dataclasses import dataclass
 from typing import List, Dict, Iterator, Tuple, Iterable
 
 
-@dataclass
 class FSEntry:
     name: str
     size: int
     sub: List['FSEntry']
+
+    def __init__(self, name: str, size: int, sub: List['FSEntry']):
+        self.name = name
+        self.size = size
+        self.sub = sub
 
     def add_entry(self, entry: 'FSEntry'):
         self.sub.append(entry)
