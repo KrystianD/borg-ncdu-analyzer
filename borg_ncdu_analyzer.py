@@ -20,6 +20,10 @@ class FSEntry:
     def from_filename(path: str, size: int = 0) -> 'FSEntry':
         return FSEntry(name=os.path.basename(path), size=size, sub=[])
 
+    @staticmethod
+    def from_fullpath(path: str, size: int = 0) -> 'FSEntry':
+        return FSEntry(name=path, size=size, sub=[])
+
 
 def iterate_path_parts(path: str) -> Iterator[Tuple[str, str]]:
     p = path.split('/')
@@ -66,7 +70,7 @@ class BorgAnalyzer:
 
     # new tree for each dataset
     def _process_new_dir_dataset(self, path: str):
-        entry = FSEntry.from_filename(path)
+        entry = FSEntry.from_fullpath(path)
         self._fs_cache[path] = entry
         self._root_objects.append(entry)
 
