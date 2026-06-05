@@ -97,6 +97,9 @@ class BorgAnalyzer:
                     self._fs_cache[path] = entry
                     self._root_objects.append(entry)
                 else:
+                    if parent_dir not in self._fs_cache:
+                        self._process_new_dir(parent_dir)
+
                     self._fs_cache[parent_dir].add_entry(entry)
 
     def generate_ncdu_tree(self):
